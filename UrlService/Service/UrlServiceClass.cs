@@ -1,5 +1,7 @@
-﻿using UrlService.Models;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UrlService.Models;
 
 namespace UrlService.Service
 {
@@ -22,34 +24,55 @@ namespace UrlService.Service
             return await _context.shortUrl.FindAsync(id);
         }
 
-        public async Task<ShortUrl> CreateUrlAsync(ShortUrl request)
+        public async Task<ShortUrl> CreateUrlAsync(CreateUrlDto request, string currentUser)
         {
+            // 1️⃣ Перевірка на порожнє значення
+            if (string.IsNullOrWhiteSpace(request.OriginalUrl))
+                throw new Exception("URL cannot be empty.");
+
+            // 2️⃣ Перевірка на коректний формат
+            if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out var uriResult)
+                || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+            {
+                throw new Exception("Invalid URL format. Please provide a valid link (http or https).");
+            }
+
             if (_context.shortUrl.Any(u => u.OriginalUrl == request.OriginalUrl))
                 throw new Exception("This URL already exists.");
 
-            request.CreatedDate = DateTime.UtcNow;
-            _context.shortUrl.Add(request);
+            var shortUrl = new ShortUrl
+            {
+                OriginalUrl = request.OriginalUrl,
+                ShortCode = Guid.NewGuid().ToString("N").Substring(0, 6),
+                CreatedBy = currentUser ?? "Anonymous",
+                CreatedDate = DateTime.UtcNow
+            };
+
+            _context.shortUrl.Add(shortUrl);
             await _context.SaveChangesAsync();
 
-            // Генеруємо короткий код
-            request.ShortCode = ConvertToShortCode(request.Id);
-            await _context.SaveChangesAsync();
-
-            return request;
+            return shortUrl;
         }
+
 
         public async Task<bool> DeleteUrlAsync(int id, string currentUser, bool isAdmin)
         {
             var url = await _context.shortUrl.FindAsync(id);
             if (url == null) return false;
 
-            // Перевірка прав
+            // перевірка прав
             if (!isAdmin && url.CreatedBy != currentUser)
                 return false;
 
             _context.shortUrl.Remove(url);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<ShortUrl> GoToOriginalAsync(string shortCode, [FromQuery] bool info = false)
+        {
+            var url = await _context.shortUrl.FirstOrDefaultAsync(u => u.ShortCode == shortCode);
+            return url;
         }
 
         private string ConvertToShortCode(int id)

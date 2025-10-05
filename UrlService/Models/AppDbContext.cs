@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 
 namespace UrlService.Models
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public DbSet<ShortUrl> shortUrl { get; set; } // оголошення таблиці (колекції сутностей)
         // для роботи із даними як із колекцією (а не таблицею і рядком SQL)

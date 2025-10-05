@@ -1,4 +1,5 @@
-﻿using UrlService.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using UrlService.Models;
 
 namespace UrlService.Service
 {
@@ -6,7 +7,8 @@ namespace UrlService.Service
     {
         Task<List<ShortUrl>> GetAllUrlsAsync();
         Task<ShortUrl> GetByIdAsync(int id);
-        Task<ShortUrl> CreateUrlAsync(ShortUrl request);
+        Task<ShortUrl> CreateUrlAsync(CreateUrlDto request, string currentUser);
         Task<bool> DeleteUrlAsync(int id, string currentUser, bool isAdmin);
+        Task<ShortUrl> GoToOriginalAsync(string shortCode, [FromQuery] bool info = false);
     }
 }

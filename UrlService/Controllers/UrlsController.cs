@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using UrlService.Models;
 using UrlService.Service;
 
@@ -31,11 +32,12 @@ namespace UrlService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ShortUrl request)
+        public async Task<IActionResult> Create([FromBody] CreateUrlDto dto)
         {
             try
             {
-                var url = await _urlService.CreateUrlAsync(request);
+                var currentUser = User.Identity.Name;
+                var url = await _urlService.CreateUrlAsync(dto, currentUser);
                 return Ok(url);
             }
             catch (Exception ex)
@@ -47,10 +49,33 @@ namespace UrlService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            // Тут поки що передаємо "user1" і false як приклад
-            var result = await _urlService.DeleteUrlAsync(id, "user1", false);
+            var currentUser = User.Identity.Name;
+            var isAdmin = User.IsInRole("Admin");
+
+            var result = await _urlService.DeleteUrlAsync(id, currentUser, isAdmin);
             if (!result) return Forbid();
             return NoContent();
+        }
+
+        [HttpGet("go/{shortCode}")]
+        public async Task<IActionResult> GoToOriginal(string shortCode, [FromQuery] bool info = false)
+        {
+            var url = await _urlService.GoToOriginalAsync(shortCode, info);
+
+            // якщо додано info=true, показуємо деталі
+            if (info)
+            {
+                return Ok(new
+                {
+                    url.OriginalUrl,
+                    url.ShortCode,
+                    url.CreatedBy,
+                    url.CreatedDate
+                });
+            }
+
+            // редірект на оригінальний сайт
+            return Redirect(url.OriginalUrl);
         }
     }
 }
