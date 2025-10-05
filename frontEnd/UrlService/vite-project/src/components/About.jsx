@@ -30,7 +30,6 @@ const About = () => {
   };
 
   const checkAdmin = () => {
-    // тут можна зробити реальну перевірку ролі через токен або API
     const role = localStorage.getItem("role");
     if (role === "Admin") setIsAdmin(true);
   };
