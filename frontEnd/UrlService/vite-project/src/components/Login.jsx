@@ -4,7 +4,6 @@ import { login } from "../service/api";
 import './Login.css'
 const Login = () => {
   const [username, setUsername] = useState("");
-  //const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -12,7 +11,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      //const data = await login(username, email, password);
       const data = await login(username, password);
       localStorage.setItem("token", data.token); // зберігаємо токен
       alert(`✅ Авторізація успішна! Вітаємо, ${username}!`);

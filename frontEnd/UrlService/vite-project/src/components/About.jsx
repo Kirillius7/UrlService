@@ -15,7 +15,6 @@ const About = () => {
   useEffect(() => {
     fetchAbout();
     checkAdmin();
-    // eslint-disable-next-line
   }, []);
 
   const fetchAbout = async () => {

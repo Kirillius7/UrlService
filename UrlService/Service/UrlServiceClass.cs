@@ -26,11 +26,11 @@ namespace UrlService.Service
 
         public async Task<ShortUrl> CreateUrlAsync(CreateUrlDto request, string currentUser)
         {
-            // 1️⃣ Перевірка на порожнє значення
+            // 1️ Перевірка на порожнє значення
             if (string.IsNullOrWhiteSpace(request.OriginalUrl))
                 throw new Exception("URL cannot be empty.");
 
-            // 2️⃣ Перевірка на коректний формат
+            // 2️ Перевірка на коректний формат
             if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out var uriResult)
                 || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
             {

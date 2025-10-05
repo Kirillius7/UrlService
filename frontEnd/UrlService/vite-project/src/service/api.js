@@ -4,17 +4,6 @@ const API_URL = "https://localhost:7012/api";
 
 // Авторизація
 
-/*
-export const login = async (userName, email, password) => {
-  const response = await axios.post(
-    `${API_URL}/account/login`, 
-    { userName, email, password },
-    { headers: { "Content-Type": "application/json" } }
-  );
-  return response.data;
-};
-*/
-
 export const login = async (userName, password) => {
   const response = await axios.post(
     `${API_URL}/account/login`, 
@@ -67,10 +56,6 @@ export const register = async (username, email, password) => {
   return response.data;
 };
 
-export const getShortInfo = async (shortCode) => {
-  const response = await axios.get(`${API_BASE}/${shortCode}?info=true`);
-  return response.data;
-};
 
 export const redirectToOriginal = (shortCode) => {
   const url = `${API_URL}/urls/go/${shortCode}`;

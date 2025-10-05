@@ -3,10 +3,6 @@
   margin: 0 auto;
   padding: 18px;
   border-radius: 14px;
-  /*background: rgba(255,255,255,0.08);   /* напівпрозоро — видно фон знизу */
-  /*color: #fff;                           /* текст контрастний на градієнті */
-  /*backdrop-filter: blur(6px);            /* розмиття фону під карткою (працює в сучасних браузерах) */
-  /*box-shadow: 0 10px 30px rgba(0,0,0,0.15);*/
   background: white;
   color: black;
   text-align: center;

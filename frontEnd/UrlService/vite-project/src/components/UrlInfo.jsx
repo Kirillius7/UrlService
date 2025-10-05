@@ -1,71 +1,15 @@
-/*import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getUrlById } from "../service/api";
-
-const UrlInfo = () => {
-  const { id } = useParams(); // беремо id з URL
-  const [url, setUrl] = useState(null);
-  const [error, setError] = useState("");
-
-  const token = localStorage.getItem("token"); // токен для авторизації
-
-  useEffect(() => {
-    fetchUrl();
-    // eslint-disable-next-line
-  }, [id]);
-
-  const fetchUrl = async () => {
-    try {
-      const data = await getUrlById(id, token);
-      setUrl(data);
-    } catch (err) {
-      console.error(err);
-      setError("Не вдалося завантажити деталі URL");
-    }
-  };
-
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!url) return <p>Завантаження...</p>;
-
-  return (
-    <div>
-      <h2>URL Details</h2>
-      <p>
-        <strong>Original URL:</strong>{" "}
-        <a href={url.originalUrl} target="_blank" rel="noopener noreferrer">
-          {url.originalUrl}
-        </a>
-      </p>
-      <p>
-        <strong>Short Code:</strong> {url.shortCode}
-      </p>
-      <p>
-        <strong>Created By:</strong> {url.createdBy}
-      </p>
-      <p>
-        <strong>Created Date:</strong> {new Date(url.createdDate).toLocaleString()}
-      </p>
-      {/* Тут можна додати інші поля, якщо вони є в API */ /*} 
-      
-    </div>
-  );
-};
-
-export default UrlInfo;*/
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getUrlById } from "../service/api";
 import { redirectToOriginal } from "../service/api";
-import { useNavigate } from "react-router-dom"; // <-- додано useNavigate
+import { useNavigate } from "react-router-dom";
 import "./UrlInfo.css"
 const UrlInfo = () => {
   const { id } = useParams(); // беремо id з URL
   const [url, setUrl] = useState(null);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // <-- додано
+  const navigate = useNavigate();
   const token = localStorage.getItem("token"); // токен для авторизації
-  //const API_URL = "https://localhost:7012/api"; 
 
   useEffect(() => {
     fetchUrl();

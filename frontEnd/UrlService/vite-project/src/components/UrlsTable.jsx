@@ -10,12 +10,6 @@ const UrlsTable = () => {
 
   const token = localStorage.getItem("token"); // токен користувача
 
-  // Завантаження URL при монтованні компонента
-  
-  //useEffect(() => {
-  //  fetchUrls();
-  //}, []);
-
   useEffect(() => {
   if (token) { // тільки якщо користувач авторизований
     fetchUrls();
