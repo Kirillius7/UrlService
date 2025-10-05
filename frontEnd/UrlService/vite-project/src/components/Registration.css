@@ -1,0 +1,57 @@
+html, body {
+  height: 100%;
+  margin: 0; /* Прибираємо стандартні відступи */
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center; /* Центрування по горизонталі */
+  align-items: center; /* Центрування по вертикалі */
+  background-color: rgb(175, 183, 192);
+}
+
+body h1{
+  color: #fff
+}
+.rgdetails-card {  
+  height: 325px;
+  width: 450px;
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);   /* напівпрозоро — видно фон знизу */
+  color: #fff;                           /* текст контрастний на градієнті */
+  backdrop-filter: blur(6px);            /* розмиття фону під карткою (працює в сучасних браузерах) */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  text-align: center;
+  justify-content: center;
+}
+
+.rgdetails-card form {
+  display: block;
+}
+
+.rgdetails-card h2{
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 30px;
+}
+
+.rgdetails-card input{
+    border-radius: 5px;
+    border: none; 
+    margin-bottom: 15px;
+    height: 25px;
+    font-size: 15px;
+}
+
+.rgbtn{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+
+  padding: 10px;
+}
+.rgdetails-card button:hover{
+    background-color: lightblue;
+}
