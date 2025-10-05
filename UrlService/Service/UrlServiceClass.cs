@@ -74,18 +74,5 @@ namespace UrlService.Service
             var url = await _context.shortUrl.FirstOrDefaultAsync(u => u.ShortCode == shortCode);
             return url;
         }
-
-        private string ConvertToShortCode(int id)
-        {
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var result = "";
-            var num = id;
-            while (num > 0)
-            {
-                result = chars[num % 62] + result;
-                num /= 62;
-            }
-            return result;
-        }
     }
 }
