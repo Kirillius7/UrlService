@@ -12,8 +12,8 @@ using UrlService.Models;
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager; // частина бібліотеки Identity для авторизації
+    private readonly UserManager<AppUser> _userManager; // частина бібліотеки Identity для керування користувачами
     private readonly IConfiguration _config;
 
     public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config)
@@ -26,34 +26,38 @@ public class AccountController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
+        // пошук користувача за ім'ям
         var user = await _userManager.FindByNameAsync(model.UserName);
         if (user == null) return Unauthorized();
 
+        // перевірка валідності введеного пароля
         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
         if (!result.Succeeded) return Unauthorized();
 
-        // Формуємо claims
+        // Формування claims (список інформації про користувача для збереження в токені)
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.Email, user.Email ?? "")
         };
 
+        // надання користувачу відповідної ролі
         var roles = await _userManager.GetRolesAsync(user);
         claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-        // Генеруємо токен
+        // Генерація токена, використовуючи секретний ключ та підпис
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddHours(1),
-            signingCredentials: creds
+            issuer: _config["Jwt:Issuer"], // видавець
+            audience: _config["Jwt:Audience"], // отримувач
+            claims: claims, // дані про користувача
+            expires: DateTime.Now.AddHours(1), // термін придатності
+            signingCredentials: creds // підпис для захисту
         );
 
+        // повернення JSON із токеном, іменем та правами користувача 
         return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), user.UserName, Roles = roles });
     }
 

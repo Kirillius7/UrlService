@@ -37,6 +37,7 @@ namespace UrlService.Service
                 throw new Exception("Invalid URL format. Please provide a valid link (http or https).");
             }
 
+            // 3 Перевірка на дублювання посилання
             if (_context.shortUrl.Any(u => u.OriginalUrl == request.OriginalUrl))
                 throw new Exception("This URL already exists.");
 
@@ -60,7 +61,7 @@ namespace UrlService.Service
             var url = await _context.shortUrl.FindAsync(id);
             if (url == null) return false;
 
-            // перевірка прав
+            // перевірка прав на видалення посилання 
             if (!isAdmin && url.CreatedBy != currentUser)
                 return false;
 

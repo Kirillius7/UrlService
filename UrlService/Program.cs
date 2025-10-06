@@ -9,6 +9,7 @@ using UrlService.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// додавання дозволу Cors для роботи із частиною застосунка, що працює на іншому порті
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactDev",
@@ -22,10 +23,16 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// DI для сервісу обробки запитів від контролера (один об'єкт на 1 HTTP запит)
 builder.Services.AddScoped<IUrlService, UrlServiceClass>();
+
+// підключення БД через EF
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     new MySqlServerVersion(new Version(8, 0, 36))));
+
+// додавання сервісу Identity для виділення ролей, зберігання даних про них у БД
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
@@ -35,6 +42,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login"; // де буде форма логіну
 });
 
+// використання JWT авторизації на сервері 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -44,6 +52,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        // перевірка видавця, отримувача, термін дії токена
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -54,11 +63,14 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
+// додавання Swagger для тестування методів API у браузері
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// виклик SeedData для роботи із ролями на сервері
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -75,6 +87,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// робота із Swagger документацією
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -82,10 +96,13 @@ app.UseSwaggerUI(c =>
 });
 app.UseRouting();
 
-// Використовуємо CORS
+// використання CORS
 app.UseCors("AllowReactDev");
 
+// перевірка JWT токен у кожному запиті
 app.UseAuthentication();
+
+// перевірка ролі та права користувача
 app.UseAuthorization();
 
 app.MapControllerRoute(
