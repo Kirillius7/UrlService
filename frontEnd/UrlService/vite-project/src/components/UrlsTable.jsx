@@ -10,13 +10,13 @@ const UrlsTable = () => {
 
   const token = localStorage.getItem("token"); // токен користувача
 
-  useEffect(() => {
+  useEffect(() => { // завантаження URL після рендеру
   if (token) { // тільки якщо користувач авторизований
     fetchUrls();
   }
 }, [token]);
 
-  const fetchUrls = async () => {
+  const fetchUrls = async () => { // виклик API і збереження отриманого URL у стан urls
     try {
       const data = await getUrls(token);
       setUrls(data);
@@ -46,14 +46,14 @@ const UrlsTable = () => {
   const handleDelete = async (id) => {
     try {
       await deleteUrl(id, token);
-      setUrls(urls.filter((url) => url.id !== id));
+      setUrls(urls.filter((url) => url.id !== id)); // фільтрація для видалення посилань зі списку
     } catch (err) {
       console.error(err);
       setError("Не вдалося видалити URL");
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = () => { // вихід і очищення токена
     localStorage.removeItem("token");
     setToken(null);
   };

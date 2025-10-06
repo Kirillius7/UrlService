@@ -1,28 +1,29 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom"; // робота з параметрами (id) URL
+// додавання реалізованих функцій з api.js
 import { getUrlById } from "../service/api";
 import { redirectToOriginal } from "../service/api";
 import { useNavigate } from "react-router-dom";
 import "./UrlInfo.css"
 const UrlInfo = () => {
-  const { id } = useParams(); // беремо id з URL
+  const { id } = useParams(); // динамічний хук, щоб отримати значення id з URL
   const [url, setUrl] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token"); // токен для авторизації
 
-  useEffect(() => {
+  useEffect(() => { // виконання функції fetchUrl() при монтуванні компоненту / при зміні id
     fetchUrl();
-    // eslint-disable-next-line
   }, [id]);
 
   const goToTable = () => {
     navigate("/");
   };
+
   const fetchUrl = async () => {
     try {
       const data = await getUrlById(id, token);
-      setUrl(data);
+      setUrl(data); // збереження відповіді з api.js до url
     } catch (err) {
       console.error(err);
       setError("Не вдалося завантажити деталі URL");

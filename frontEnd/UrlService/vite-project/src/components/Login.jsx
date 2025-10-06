@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../service/api";
+import { useNavigate } from "react-router-dom"; // хук-навігація для переходу на інші сторінки
+import { login } from "../service/api"; // функція для запиту до api для авторизації
 import './Login.css'
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -9,12 +9,12 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // блокування перезавантаження сторінки
     try {
       const data = await login(username, password);
-      localStorage.setItem("token", data.token); // зберігаємо токен
+      localStorage.setItem("token", data.token); // зберігаємо JWT-токен у браузері
       alert(`✅ Авторізація успішна! Вітаємо, ${username}!`);
-      navigate("/"); // переходимо на таблицю URL
+      navigate("/"); // перехід на таблицю URL
     } catch (err) {
       setError("Неправильний логін або пароль");
     }

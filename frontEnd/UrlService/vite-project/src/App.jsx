@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // компонент маршрутизації
+// імпорт компонентів для переходу на сторінки
 import Login from "./components/Login";
 import UrlsTable from "./components/UrlsTable";
 import UrlInfo from "./components/UrlInfo";
@@ -7,7 +8,7 @@ import Register from "./components/Registration";
 
 function App() {
   return (
-    <Router>
+    <Router> 
       <Routes>
         <Route path="/" element={<UrlsTable />} />
         <Route path="/login" element={<Login />} />

@@ -1,22 +1,21 @@
-import axios from "axios";
+import axios from "axios"; // бібліотека для відправки запитів (CRUD)
 
-const API_URL = "https://localhost:7012/api"; 
+const API_URL = "https://localhost:7012/api"; // порт API
 
 // Авторизація
-
 export const login = async (userName, password) => {
-  const response = await axios.post(
+  const response = await axios.post( // передача за портом методу дані у форматі JSON
     `${API_URL}/account/login`, 
     { userName, password },
-    { headers: { "Content-Type": "application/json" } }
+    { headers: { "Content-Type": "application/json" } } // наочний приклад формату передачі JSON
   );
-  return response.data;
+  return response.data; // повернення токена, імені та ролі користувача
 };
 
 // Отримати всі URL
 export const getUrls = async (token) => {
   const response = await axios.get(`${API_URL}/urls`, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` } // перевірка токена у AddJwtBearer() на валідність
   });
   return response.data;
 };
@@ -47,6 +46,7 @@ export const getUrlById = async (id, token) => {
   return response.data;
 };
 
+// Регістрація на сервері
 export const register = async (username, email, password) => {
   const response = await axios.post(`${API_URL}/account/register`, {
     username,
@@ -56,8 +56,8 @@ export const register = async (username, email, password) => {
   return response.data;
 };
 
-
+// Перехід на сайт за скороченим посиланням
 export const redirectToOriginal = (shortCode) => {
   const url = `${API_URL}/urls/go/${shortCode}`;
-  window.open(url, "_blank"); // відкриває у новій вкладці
+  window.open(url, "_blank"); // відкриває сайт за посиланням у новій вкладці
 };

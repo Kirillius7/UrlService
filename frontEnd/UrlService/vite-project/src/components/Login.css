@@ -21,7 +21,7 @@ body h1{
   padding: 18px;
   border-radius: 14px;
   background: rgba(255,255,255,0.08);   /* напівпрозоро — видно фон знизу */
-  color: #fff;                           /* текст контрастний на градієнті */
+  color: #fff;
   backdrop-filter: blur(6px);
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   text-align: center;
